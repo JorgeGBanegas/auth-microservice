@@ -1,14 +1,28 @@
 # pylint: disable=missing-module-docstring
+import os
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+from v1.api import app as v1_app
+
+load_dotenv()
 
 app = FastAPI(
     title="MicroServicio de autenticación",
     description="API para el MicroServicio de autenticación",
     version="1.0.0",
 )
+fronted_domain = os.getenv("DOMAIN_FRONT")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[fronted_domain],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 # pylint: disable=missing-function-docstring
-@app.get("/")
+@app.get("/api")
 async def root():
     return {
         "message": "Bienvenido a la API de autenticación",
@@ -18,6 +32,8 @@ async def root():
         "github": "https://github.com/JorgeGBanegas"
     }
 
+
+app.mount("/api/v1", v1_app)
 
 if __name__ == "__main__":
     import uvicorn
