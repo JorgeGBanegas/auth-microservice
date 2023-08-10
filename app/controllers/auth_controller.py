@@ -5,21 +5,21 @@ from typing import Union
 from fastapi import Depends
 from app.dependencies.dependencies import get_auth_service
 from app.schemas.auth.auth_schemas import (UserLoginSchema, UserSignupSchema,
-                                            UserCognitoLoginSchema, UserCognitoNewPasswordSchema,
-                                            UserCognitoSignupSchema, UserSchema,
-                                            UserUpdateImageSchema)
+                                           UserCognitoLoginSchema, UserCognitoNewPasswordSchema,
+                                           UserCognitoSignupSchema, UserSchema,
+                                           UserUpdateImageSchema)
 from app.services.auth_service import AuthService
 from app.exceptions.auth_exceptions import (NotAuthorized, UserNotFound, InvalidCode,
                                             InvalidSession, TokenNotFound, TokenNotValid,
                                             InvalidPassword)
 
 
-class AuthController :
+class AuthController:
     def __init__(self, auth_service: AuthService = Depends(get_auth_service)) -> None:
         self.auth_service = auth_service
 
     def signin(self, user: UserLoginSchema) -> Union[UserCognitoLoginSchema,
-                                                    UserCognitoNewPasswordSchema]:
+                                                     UserCognitoNewPasswordSchema]:
         return self.auth_service.signin(user)
 
     def signup(self, user: UserSignupSchema) -> UserCognitoSignupSchema:
@@ -76,3 +76,6 @@ class AuthController :
             return self.auth_service.update_image_s3(user)
         except Exception as error:
             raise error
+
+    def get_all_users(self) -> list:
+        return self.auth_service.get_all_users()

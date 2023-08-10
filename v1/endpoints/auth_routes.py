@@ -55,3 +55,8 @@ def get_user(access_token: str = Depends(verify_access_token),
 def update_image(user: UserUpdateImageSchema,
                  auth_controller: AuthController = Depends()):
     return auth_controller.update_image_s3(user)
+
+
+@router.get("/")
+def get_all_users(auth_controller: AuthController = Depends()):
+    return auth_controller.get_all_users()

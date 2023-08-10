@@ -9,12 +9,14 @@ class UserLoginSchema(BaseModel):
     email: EmailStr
     password: str
 
+
 class UserSignupSchema(BaseModel):
     email: EmailStr
     first_name: str
     last_name: str
     image: str
     role: str
+
 
 class UserSchema(UserSignupSchema):
     @classmethod
@@ -27,8 +29,10 @@ class UserSchema(UserSignupSchema):
             image=data["UserAttributes"][6]["Value"],
         )
 
+
 class UserCognitoNewPasswordGetSchema(UserLoginSchema):
     session: str
+
 
 class UserCognitoSignupSchema(UserSignupSchema):
     status: str
@@ -44,6 +48,7 @@ class UserCognitoSignupSchema(UserSignupSchema):
             status=data["User"]["UserStatus"],
         )
 
+
 class UserCognitoLoginSchema(BaseModel):
     access_token: str
     expires_in: int
@@ -51,6 +56,7 @@ class UserCognitoLoginSchema(BaseModel):
     refresh_token: str
     token_type: str
     user: UserSchema
+
     @classmethod
     def from_dict(cls, data: dict, user: UserSchema):
         return cls(
@@ -61,6 +67,7 @@ class UserCognitoLoginSchema(BaseModel):
             token_type=data["AuthenticationResult"]["TokenType"],
             user=user,
         )
+
 
 class UserCognitoNewPasswordSchema(BaseModel):
     challenge_name: str
@@ -73,6 +80,27 @@ class UserCognitoNewPasswordSchema(BaseModel):
             session=data["Session"],
         )
 
+
 class UserUpdateImageSchema(BaseModel):
     image: str
     email: EmailStr
+
+
+class GetUserSchema(BaseModel):
+    email: EmailStr
+    first_name: str
+    last_name: str
+    image: str
+    role: str
+    status: str
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        return cls(
+            first_name=data["Attributes"][0]["Value"],
+            last_name=data["Attributes"][2]["Value"],
+            role=data["Attributes"][1]["Value"],
+            email=data["Attributes"][4]["Value"],
+            image=data["Attributes"][3]["Value"],
+            status=data["UserStatus"],
+        )
