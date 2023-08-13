@@ -15,13 +15,15 @@ app = FastAPI(
 fronted_domain = os.getenv("DOMAIN_FRONT")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[fronted_domain],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
 )
 
 # pylint: disable=missing-function-docstring
+
+
 @app.get("/api")
 async def root():
     return {
